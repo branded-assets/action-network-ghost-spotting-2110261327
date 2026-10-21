@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Analysis: Where Are You Most Likely To See A Ghost?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#120d1a; --ink2:#1b1426; --ink3:#251b33; --line:#3a2d4d;
+  --bone:#eee6d3; --dim:#a79cb8; --candle:#f2b441; --blood:#c8433f;
+  --neon:#a6ff4d; --c0:#7fd6c2; --c1:#a08cf0; --c2:#e0a15a; --c3:#6fb0ee; --c4:#e0605a;
+  --display:'Pirata One','Georgia',serif;
+  --body:'Barlow Semi Condensed','Arial Narrow',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ink)}
+body{font-family:var(--body);color:var(--bone);line-height:1.35;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 22px;position:relative;overflow:hidden;
+  background:
+   radial-gradient(900px 340px at 85% -80px, rgba(160,140,240,.20), transparent 70%),
+   radial-gradient(700px 300px at -10% 18%, rgba(127,214,194,.10), transparent 70%),
+   var(--ink)}
+header{text-align:center;margin-bottom:20px}
+.moon{width:54px;height:54px;border-radius:50%;margin:0 auto 10px;
+  background:radial-gradient(circle at 36% 34%,#fff6dc 0,#f2dfae 55%,#cdb883 100%);
+  box-shadow:0 0 38px 8px rgba(242,223,174,.28)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,5vw,48px);text-wrap:balance;line-height:1.02;letter-spacing:.5px;color:var(--bone);text-shadow:0 0 26px rgba(160,140,240,.45)}
+.sub{margin-top:8px;color:var(--dim);font-size:clamp(14px,2.2vw,17px);max-width:640px;margin-inline:auto}
+nav{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:20px 0 14px}
+nav button{font:600 15px var(--body);color:var(--dim);background:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:border-color .15s,color .15s,background .15s}
+nav button i{width:9px;height:9px;border-radius:50%;display:inline-block}
+nav button:hover{color:var(--bone);border-color:var(--dim)}
+nav button[aria-selected=true]{color:var(--ink);background:var(--tc);border-color:var(--tc)}
+nav button[aria-selected=true] i{background:var(--ink)!important}
+:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+.mapwrap{margin:4px auto 22px;max-width:860px}
+.map{--glow:#a6ff4d}
+.map svg{display:block;width:100%;height:auto;overflow:visible}
+.st,.co{cursor:pointer;outline:none}
+.st path{stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round;transition:filter .15s,stroke .15s}
+.st.g1 path{filter:drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 14px var(--glow)) drop-shadow(0 0 30px var(--glow))}
+.st.g2 path{filter:drop-shadow(0 0 6px var(--glow))}
+.st.g3 path{filter:drop-shadow(0 0 3px var(--glow))}
+.st:hover path,.st:focus-visible path{stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 9px var(--glow)) brightness(1.18)}
+.selring{stroke:var(--candle);stroke-width:2.6;stroke-linejoin:round;pointer-events:none}
+.st.dim,.co.dim{opacity:.22}
+.la,.lr,.ca,.cr{fill:#fff;paint-order:stroke;stroke:rgba(18,13,26,.85);stroke-linejoin:round;pointer-events:none}
+.la{font:700 12.5px var(--body);letter-spacing:.3px;stroke-width:2.6px}
+.lr{font:400 16px var(--display);stroke-width:3px}
+.co rect{stroke:var(--ink);stroke-width:1.3;transition:stroke .15s}
+.co:hover rect,.co:focus-visible rect{stroke:#fff;stroke-width:2}
+.co.sel rect{stroke:var(--candle);stroke-width:2.6}
+.co line{stroke:#7d7190;stroke-width:1;opacity:.55;pointer-events:none}
+.ca{font:700 12px var(--body);stroke-width:2.4px}
+.cr{font:400 16px var(--display);stroke-width:3px}
+.map.anim .st,.map.anim .co{opacity:0;animation:lit .55s ease-out forwards}
+@keyframes lit{from{opacity:0}to{opacity:1}}
+.readout{margin-top:12px;text-align:center;font-size:15px;color:var(--dim);min-height:24px}
+.readout b{color:var(--bone);font-weight:700}
+.readout em{font-style:normal;color:var(--candle);font-weight:700}
+.readout button{font:600 14px var(--body);color:var(--ink);background:var(--bone);border:0;border-radius:999px;padding:4px 12px;margin-left:8px;cursor:pointer}
+.tiers{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin-top:14px;font-size:13px;color:var(--dim)}
+.tiers span{display:flex;align-items:center;gap:6px}
+.tiers i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.tiers em{font-style:normal;color:#7d7190}
+.bar-top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.note{font-size:14px;color:var(--dim);flex:1 1 300px}
+.note b{color:var(--bone);font-weight:600}
+.search{flex:0 1 210px}
+.search input{width:100%;font:500 15px var(--body);color:var(--bone);background:var(--ink2);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.search input::placeholder{color:#7d7190}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--dim);margin-bottom:10px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px}
+.list{list-style:none;border-top:1px solid var(--line)}
+.row{border-bottom:1px solid var(--line)}
+.head{width:100%;display:grid;grid-template-columns:46px 190px 1fr 62px 18px;align-items:center;gap:10px;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:7px 8px;cursor:pointer;transition:background .15s}
+.head:hover,.row.open .head{background:var(--ink2)}
+.rk{font-family:var(--display);font-size:25px;line-height:1;text-align:right;color:var(--dim)}
+.rk small{display:block;font:600 9.5px var(--body);letter-spacing:.4px;margin-top:3px;opacity:.85}
+.tie{font-size:.72em;font-weight:600;opacity:.85}
+.top .rk{color:var(--candle)}
+.top .nm{font-weight:700}
+.nm{font-size:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{height:16px;background:var(--ink3);border-radius:3px;overflow:hidden;display:flex}
+.seg{height:100%;transform-origin:left}
+.anim .seg{transform:scaleX(0);animation:grow .8s cubic-bezier(.2,.7,.2,1) forwards}
+.track.single .seg{border-radius:0 3px 3px 0}
+@keyframes grow{to{transform:scaleX(1)}}
+.val{font-family:var(--display);font-size:23px;text-align:right;line-height:1}
+.val small{font:500 12px var(--body);color:var(--dim);display:block;margin-top:2px}
+.chev{width:9px;height:9px;border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:rotate(45deg);transition:transform .2s;margin-top:-4px}
+.row.open .chev{transform:rotate(225deg);margin-top:4px}
+.detail{display:none;padding:4px 10px 16px 56px;background:var(--ink2);border-top:1px dashed var(--line)}
+.row.open .detail{display:block}
+.dtitle{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;align-items:baseline;margin:10px 0 8px}
+.dtitle strong{font-family:var(--display);font-weight:400;font-size:26px}
+.dtitle span{color:var(--dim);font-size:14px}
+.dtitle em{font-style:normal;color:var(--candle);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-weight:600;color:var(--dim);font-size:13px;text-align:right;padding:5px 8px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+td{padding:6px 8px;text-align:right;border-bottom:1px solid rgba(58,45,77,.6)}
+td:first-child{font-weight:600;white-space:nowrap}
+td:first-child i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px}
+tr.total td{border-bottom:0;font-weight:700;color:var(--candle);padding-top:9px}
+.pts{font-weight:700}
+.tip{position:fixed;z-index:50;pointer-events:none;background:#0b0810;border:1px solid var(--dim);border-radius:8px;padding:10px 12px;font-size:14px;min-width:230px;box-shadow:0 10px 30px rgba(0,0,0,.6);opacity:0;transition:opacity .08s}
+.tip.on{opacity:1}
+.tip h4{font-family:var(--display);font-weight:400;font-size:21px;margin-bottom:5px}
+.tip .l{display:flex;justify-content:space-between;gap:14px;padding:2px 0}
+.tip .l span:first-child{color:var(--dim)}
+.tip .l b{font-weight:600}
+.tip .hint{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);color:var(--candle);font-size:12.5px}
+.stats{display:flex;flex-wrap:wrap;gap:10px 44px;margin:6px 0 4px}
+.stats b{font-family:var(--display);font-weight:400;font-size:38px;line-height:1.05;display:block}
+.stats small{color:var(--dim);font-size:14px}
+.empty{padding:26px;text-align:center;color:var(--dim)}
+footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--dim)}
+footer p+p{margin-top:6px}
+.brand{margin-top:16px;text-align:center;font-family:var(--display);font-size:24px;color:var(--bone);letter-spacing:.5px}
+@media(max-width:640px){
+  .la{display:none}.lr{font-size:21px}.cr{font-size:17px}.tiers{font-size:12px;gap:5px 12px}
+  h1 br{display:none}
+  .head{grid-template-columns:34px 1fr 54px 14px;gap:8px}
+  .head .track{grid-column:2 / 4;grid-row:2;margin-top:-2px}
+  .head .rk{grid-row:1/3;align-self:center}
+  .head .chev{grid-row:1/3;align-self:center}
+  .nm{font-size:16px}
+  .detail{padding-left:12px}
+  table{font-size:13.5px} th{font-size:11.5px;padding:5px 4px} td{padding:6px 4px}
+  td:first-child i{margin-right:5px}
+  td:first-child{white-space:normal;line-height:1.15}
+  nav button{padding:7px 12px;font-size:14px}
+}
+@media (hover:none){.tip{display:none}}
+@media (prefers-reduced-motion:reduce){.map.anim .st,.map.anim .co{animation:none;opacity:1}.anim .seg{animation:none;transform:none}.chev{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="moon" aria-hidden="true"></div>
+  <h1>Data Analysis: <br>Where Are You Most Likely To See A Ghost?</h1>
+  <p class="sub">All 50 states plus DC, ranked on five haunting factors (ghost sightings, cemeteries, ghost towns, ghost searches and haunted locations), each measured per 100,000 residents. Tap any state for the full numbers.</p>
+</header>
+
+<nav id="tabs" role="tablist" aria-label="Ranking views"></nav>
+
+<section class="mapwrap" aria-label="Map of the ranking">
+  <div class="map" id="map"></div>
+  <div class="tiers" id="tiers"></div>
+  <div class="readout" id="readout"></div>
+</section>
+
+<div class="bar-top">
+  <p class="note" id="note"></p>
+  <div class="search"><input id="q" type="search" placeholder="Find your state" aria-label="Find your state"></div>
+</div>
+<div class="legend" id="legend"></div>
+
+<ol class="list" id="list"></ol>
+
+<footer>
+  <p><b>How the ranking works:</b> each factor is converted to a rate per 100,000 residents. In every category the 51 states are ranked, earning 51 points for the highest rate down to 1 point for the lowest. The five category scores are added together (maximum 255) to give the final ranking. Tied totals share a rank.</p>
+  <p><b>Sources:</b> FindAGrave, GhostsOfAmerica, Google Keyword Planner, FrightFind, Wikipedia’s lists of ghost towns in the United States. Ghost searches are average monthly Google searches for terms such as “haunted house near me,” “how to get rid of ghosts” and “ghosts.”</p>
+  <div class="brand">ActionNetwork.com</div>
+</footer>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const DATA = [{"n": "West Virginia", "pop": 1770071, "raw": [619, 19902, 104, 6810, 20], "per": [34.9703, 1124.3617, 5.8755, 384.7303, 1.1299], "pts": [44, 51, 45, 40, 29], "tot": 209, "rank": 1}, {"n": "South Dakota", "pop": 887770, "raw": [428, 2680, 246, 2890, 13], "per": [48.2107, 301.88, 27.7099, 325.5348, 1.4643], "pts": [48, 42, 51, 19, 41], "tot": 201, "rank": 2}, {"n": "North Dakota", "pop": 780157, "raw": [410, 2425, 65, 2170, 11], "per": [52.5535, 310.8349, 8.3317, 278.1491, 1.41], "pts": [50, 43, 46, 11, 40], "tot": 190, "rank": 3}, {"n": "Iowa", "pop": 3207004, "raw": [1074, 5073, 45, 13510, 31], "per": [33.4892, 158.185, 1.4032, 421.2655, 0.9666], "pts": [43, 34, 28, 47, 24], "tot": 176, "rank": 4}, {"n": "Montana", "pop": 1122867, "raw": [394, 1639, 111, 2670, 36], "per": [35.0888, 145.9656, 9.8854, 237.7842, 3.2061], "pts": [45, 32, 47, 1, 50], "tot": 175, "rank": 5}, {"n": "Kentucky", "pop": 4505836, "raw": [1268, 46718, 21, 18720, 54], "per": [28.1413, 1036.8331, 0.4661, 415.4612, 1.1984], "pts": [36, 50, 11, 45, 32], "tot": 174, "rank": 6}, {"n": "Oregon", "pop": 4246155, "raw": [1103, 1802, 195, 17220, 68], "per": [25.9764, 42.4384, 4.5924, 405.5434, 1.6014], "pts": [31, 12, 43, 44, 44], "tot": 174, "rank": 6}, {"n": "Kansas", "pop": 2937880, "raw": [979, 3869, 299, 10010, 33], "per": [33.3233, 131.6936, 10.1774, 340.7219, 1.1233], "pts": [42, 29, 48, 26, 28], "tot": 173, "rank": 8}, {"n": "Nebraska", "pop": 1978379, "raw": [606, 2515, 107, 6710, 26], "per": [30.6311, 127.1243, 5.4085, 339.1666, 1.3142], "pts": [39, 28, 44, 23, 39], "tot": 173, "rank": 8}, {"n": "Wyoming", "pop": 579315, "raw": [220, 645, 59, 1480, 12], "per": [37.9759, 111.3384, 10.1844, 255.4741, 2.0714], "pts": [47, 27, 49, 4, 46], "tot": 173, "rank": 8}, {"n": "Maine", "pop": 1395722, "raw": [811, 7343, 7, 4200, 26], "per": [58.1061, 526.1076, 0.5015, 300.9195, 1.8628], "pts": [51, 49, 12, 13, 45], "tot": 170, "rank": 11}, {"n": "Alaska", "pop": 733406, "raw": [240, 549, 78, 2000, 21], "per": [32.724, 74.8562, 10.6353, 272.7003, 2.8634], "pts": [41, 18, 50, 9, 49], "tot": 167, "rank": 12}, {"n": "Oklahoma", "pop": 4053824, "raw": [1987, 5678, 180, 15020, 30], "per": [49.0154, 140.0653, 4.4403, 370.5144, 0.74], "pts": [49, 30, 42, 35, 11], "tot": 167, "rank": 12}, {"n": "Vermont", "pop": 645464, "raw": [245, 1935, 9, 1570, 22], "per": [37.9572, 299.7843, 1.3943, 243.2359, 3.4084], "pts": [46, 41, 27, 2, 51], "tot": 167, "rank": 12}, {"n": "New Mexico", "pop": 2114371, "raw": [630, 2087, 64, 7200, 32], "per": [29.7961, 98.7055, 3.0269, 340.5268, 1.5135], "pts": [38, 23, 38, 25, 42], "tot": 166, "rank": 15}, {"n": "Arkansas", "pop": 3067732, "raw": [844, 9017, 84, 11710, 27], "per": [27.5122, 293.9305, 2.7382, 381.7152, 0.8801], "pts": [34, 40, 37, 37, 17], "tot": 165, "rank": 16}, {"n": "Wisconsin", "pop": 5911696, "raw": [1597, 4830, 145, 22920, 72], "per": [27.0142, 81.7024, 2.4528, 387.706, 1.2179], "pts": [32, 19, 36, 42, 34], "tot": 163, "rank": 17}, {"n": "Missouri", "pop": 6196911, "raw": [1711, 16705, 34, 23530, 77], "per": [27.6105, 269.5698, 0.5487, 379.7053, 1.2426], "pts": [35, 38, 13, 36, 36], "tot": 158, "rank": 18}, {"n": "Tennessee", "pop": 7126489, "raw": [1428, 29572, 17, 28040, 86], "per": [20.0379, 414.9589, 0.2385, 393.4616, 1.2068], "pts": [21, 47, 7, 43, 33], "tot": 151, "rank": 19}, {"n": "Mississippi", "pop": 2939690, "raw": [608, 14317, 55, 7810, 37], "per": [20.6825, 487.0241, 1.8709, 265.6743, 1.2586], "pts": [22, 48, 33, 6, 37], "tot": 146, "rank": 20}, {"n": "Alabama", "pop": 5108468, "raw": [1231, 14900, 57, 18720, 49], "per": [24.0972, 291.6726, 1.1158, 366.4504, 0.9592], "pts": [28, 39, 22, 32, 23], "tot": 144, "rank": 21}, {"n": "Indiana", "pop": 6862199, "raw": [2212, 9739, 62, 26230, 55], "per": [32.2346, 141.9224, 0.9035, 382.239, 0.8015], "pts": [40, 31, 21, 38, 12], "tot": 142, "rank": 22}, {"n": "Rhode Island", "pop": 1095962, "raw": [255, 3791, 3, 3290, 24], "per": [23.2672, 345.9062, 0.2737, 300.1929, 2.1899], "pts": [27, 44, 9, 12, 47], "tot": 139, "rank": 23}, {"n": "Colorado", "pop": 5877611, "raw": [877, 1447, 241, 22530, 75], "per": [14.921, 24.6188, 4.1003, 383.319, 1.276], "pts": [11, 9, 40, 39, 38], "tot": 137, "rank": 24}, {"n": "Utah", "pop": 3417734, "raw": [608, 690, 145, 15020, 32], "per": [17.7896, 20.1888, 4.2426, 439.4725, 0.9363], "pts": [17, 5, 41, 48, 22], "tot": 133, "rank": 25}, {"n": "New Hampshire", "pop": 1451674, "raw": [302, 3602, 12, 3790, 39], "per": [20.8036, 248.1273, 0.8266, 261.0779, 2.6866], "pts": [23, 37, 19, 5, 48], "tot": 132, "rank": 26}, {"n": "Illinois", "pop": 12549689, "raw": [2638, 10446, 86, 58650, 111], "per": [21.0204, 83.2371, 0.6853, 467.3423, 0.8845], "pts": [24, 20, 17, 50, 19], "tot": 130, "rank": 27}, {"n": "Michigan", "pop": 9986857, "raw": [2813, 4148, 135, 41940, 72], "per": [28.167, 41.5346, 1.3518, 419.9519, 0.7209], "pts": [37, 11, 26, 46, 10], "tot": 130, "rank": 27}, {"n": "Virginia", "pop": 8715698, "raw": [1912, 35047, 22, 30330, 77], "per": [21.9374, 402.1135, 0.2524, 347.9928, 0.8835], "pts": [26, 46, 8, 29, 18], "tot": 127, "rank": 29}, {"n": "Ohio", "pop": 11785869, "raw": [2985, 12148, 67, 55370, 80], "per": [25.3269, 103.0726, 0.5685, 469.7999, 0.6788], "pts": [30, 24, 14, 51, 7], "tot": 126, "rank": 30}, {"n": "Louisiana", "pop": 4657757, "raw": [738, 7129, 72, 11810, 73], "per": [15.8445, 153.0565, 1.5458, 253.5555, 1.5673], "pts": [13, 33, 30, 3, 43], "tot": 122, "rank": 31}, {"n": "Pennsylvania", "pop": 12961683, "raw": [2335, 13745, 159, 47950, 107], "per": [18.0146, 106.0433, 1.2267, 369.9365, 0.8255], "pts": [18, 25, 25, 34, 14], "tot": 116, "rank": 32}, {"n": "Washington", "pop": 7812880, "raw": [1371, 1601, 148, 27630, 79], "per": [17.5479, 20.4918, 1.8943, 353.6468, 1.0112], "pts": [16, 6, 34, 30, 26], "tot": 112, "rank": 33}, {"n": "Texas", "pop": 30503301, "raw": [7669, 18496, 558, 112810, 127], "per": [25.1415, 60.6361, 1.8293, 369.8288, 0.4163], "pts": [29, 15, 32, 33, 1], "tot": 110, "rank": 34}, {"n": "Nevada", "pop": 3194176, "raw": [380, 388, 113, 10910, 39], "per": [11.8967, 12.1471, 3.5377, 341.5591, 1.221], "pts": [5, 2, 39, 27, 35], "tot": 108, "rank": 35}, {"n": "Georgia", "pop": 10912876, "raw": [1857, 20529, 98, 39240, 72], "per": [17.0166, 188.1172, 0.898, 359.5752, 0.6598], "pts": [14, 35, 20, 31, 6], "tot": 106, "rank": 36}, {"n": "Idaho", "pop": 1964726, "raw": [532, 946, 28, 5410, 18], "per": [27.0776, 48.1492, 1.4251, 275.3565, 0.9162], "pts": [33, 13, 29, 10, 21], "tot": 106, "rank": 36}, {"n": "North Carolina", "pop": 10745129, "raw": [1605, 38508, 17, 37040, 88], "per": [14.937, 358.3763, 0.1582, 344.7143, 0.819], "pts": [12, 45, 5, 28, 13], "tot": 103, "rank": 38}, {"n": "Delaware", "pop": 1031890, "raw": [134, 1115, 8, 3130, 12], "per": [12.9859, 108.0542, 0.7753, 303.3269, 1.1629], "pts": [7, 26, 18, 14, 31], "tot": 96, "rank": 39}, {"n": "South Carolina", "pop": 5373555, "raw": [927, 12570, 19, 16520, 49], "per": [17.2511, 233.9234, 0.3536, 307.4315, 0.9119], "pts": [15, 36, 10, 15, 20], "tot": 96, "rank": 39}, {"n": "Hawaii", "pop": 1435138, "raw": [194, 593, 30, 3870, 15], "per": [13.5179, 41.3201, 2.0904, 269.6605, 1.0452], "pts": [8, 10, 35, 8, 27], "tot": 88, "rank": 41}, {"n": "Arizona", "pop": 7431344, "raw": [825, 1314, 134, 25130, 73], "per": [11.1016, 17.6819, 1.8032, 338.1622, 0.9823], "pts": [3, 4, 31, 22, 25], "tot": 85, "rank": 42}, {"n": "Minnesota", "pop": 5737915, "raw": [1137, 4856, 66, 17720, 37], "per": [19.8156, 84.63, 1.1502, 308.823, 0.6448], "pts": [20, 21, 23, 16, 5], "tot": 85, "rank": 42}, {"n": "District of Columbia", "pop": 701974, "raw": [0, 100, 0, 3130, 8], "per": [0.0, 14.2455, 0.0, 445.8855, 1.1396], "pts": [1, 3, 1, 49, 30], "tot": 84, "rank": 44}, {"n": "Massachusetts", "pop": 7029917, "raw": [1508, 3576, 13, 23520, 61], "per": [21.4512, 50.8683, 0.1849, 334.5701, 0.8677], "pts": [25, 14, 6, 21, 16], "tot": 82, "rank": 45}, {"n": "Maryland", "pop": 6180253, "raw": [869, 5413, 38, 20230, 33], "per": [14.0609, 87.5854, 0.6149, 327.3329, 0.534], "pts": [10, 22, 15, 20, 3], "tot": 70, "rank": 46}, {"n": "Connecticut", "pop": 3626205, "raw": [497, 2484, 5, 12310, 30], "per": [13.7058, 68.5014, 0.1379, 339.4734, 0.8273], "pts": [9, 17, 4, 24, 15], "tot": 69, "rank": 47}, {"n": "New York", "pop": 19571216, "raw": [2196, 12643, 20, 75390, 95], "per": [11.2206, 64.6, 0.1022, 385.2086, 0.4854], "pts": [4, 16, 2, 41, 2], "tot": 65, "rank": 48}, {"n": "California", "pop": 39029342, "raw": [7256, 2916, 256, 122270, 214], "per": [18.5911, 7.4713, 0.6559, 313.2771, 0.5483], "pts": [19, 1, 16, 18, 4], "tot": 58, "rank": 49}, {"n": "Florida", "pop": 22244823, "raw": [1804, 4686, 263, 59470, 153], "per": [8.1098, 21.0656, 1.1823, 267.3431, 0.6878], "pts": [2, 7, 24, 7, 8], "tot": 48, "rank": 50}, {"n": "New Jersey", "pop": 9290841, "raw": [1110, 2250, 12, 28830, 64], "per": [11.9472, 24.2174, 0.1292, 310.3056, 0.6889], "pts": [6, 8, 3, 17, 9], "tot": 43, "rank": 51}];
+const CATS = [
+  {k:'Ghost Sightings',   unit:'Ghost Sightings per 100k',         noun:'ghost sightings',        col:'var(--c0)', d:1, desc:'reported ghost encounters'},
+  {k:'Cemeteries',        unit:'Cemeteries per 100k',              noun:'cemeteries',             col:'var(--c1)', d:1, desc:'burial grounds'},
+  {k:'Ghost Towns',       unit:'Ghost Towns per 100k',             noun:'ghost towns',            col:'var(--c2)', d:2, desc:'abandoned settlements'},
+  {k:'Ghost Searches',    unit:'Monthly Ghost Searches per 100k',  noun:'monthly ghost searches', col:'var(--c3)', d:0, desc:'average monthly Google searches for ghost-related terms such as “haunted house near me,” “how to get rid of ghosts” and “ghosts”'},
+  {k:'Haunted Locations', unit:'Haunted Locations per 100k',       noun:'haunted locations',      col:'var(--c4)', d:2, desc:'documented haunted sites'}
+];
+const fmtInt = n => n.toLocaleString('en-US');
+const fmtPer = (v,i) => v.toLocaleString('en-US',{minimumFractionDigits:CATS[i].d,maximumFractionDigits:CATS[i].d});
+const tiesAt = new Map(); DATA.forEach(s=>tiesAt.set(s.rank,(tiesAt.get(s.rank)||0)+1));
+const rankLabel = s => String(s.rank);
+const isTie = s => tiesAt.get(s.rank)>1;
+const tieTag = s => isTie(s)?' <small class="tie">(TIE)</small>':'';
+
+const ABBR={'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','District of Columbia':'DC','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
+const GEO = {"Washington":{"d":"M67.2,17.9L86.4,28.9L95.7,14.0L169.3,32.9L157.9,83.5L157.9,91.7L129.7,85.1L121.0,85.0L107.8,85.7L98.1,84.1L87.0,82.1L76.4,78.1L73.9,66.9L63.8,61.7L66.2,48.9L66.4,34.3Z","c":[116.0,52.8]},"Oregon":{"d":"M63.8,61.7L73.9,66.9L76.4,78.1L87.0,82.1L98.1,84.1L107.8,85.7L121.0,85.0L129.7,85.1L157.9,91.7L161.5,102.8L153.4,113.3L146.6,124.2L146.7,134.5L138.8,170.0L33.9,142.2L36.6,126.1L43.0,115.3L52.8,93.0L60.1,76.3Z","c":[97.8,119.6]},"Idaho":{"d":"M169.3,32.9L182.4,35.8L178.2,55.2L182.9,62.3L192.2,85.6L190.7,107.8L201.8,121.2L207.3,126.3L214.4,135.7L233.7,136.9L225.8,186.7L138.8,170.0L146.7,134.5L146.6,124.2L153.4,113.3L161.5,102.8L157.9,91.7L157.9,83.5Z","c":[182.6,130.2]},"Montana":{"d":"M182.4,35.8L340.6,59.3L333.8,139.0L235.3,127.0L233.7,136.9L214.4,135.7L207.3,126.3L201.8,121.2L190.7,107.8L192.2,85.6L182.9,62.3L178.2,55.2Z","c":[261.0,88.5]},"Wyoming":{"d":"M235.3,127.0L333.8,139.0L327.0,219.5L222.6,206.7Z","c":[279.6,173.4]},"Utah":{"d":"M182.0,179.0L225.8,186.7L222.6,206.7L252.3,211.1L241.2,291.5L162.9,278.5Z","c":[207.7,238.8]},"Nevada":{"d":"M96.0,159.7L182.0,179.0L159.8,294.5L148.4,294.3L145.9,316.5L80.8,218.5Z","c":[132.8,223.7]},"Arizona":{"d":"M162.9,278.5L241.2,291.5L225.5,405.1L191.4,400.0L133.3,365.6L135.5,361.5L141.7,348.7L141.6,332.2L145.9,316.5L148.4,294.3L159.8,294.5Z","c":[190.7,339.3]},"California":{"d":"M33.9,142.2L96.0,159.7L80.8,218.5L145.9,316.5L141.6,332.2L141.7,348.7L135.5,361.5L95.2,356.8L94.3,346.9L79.9,328.0L79.5,322.7L69.0,317.0L49.8,305.8L51.1,291.4L39.3,257.8L35.0,243.9L36.8,231.8L30.4,225.7L25.1,205.1L28.9,187.2L24.0,171.9L31.6,162.6L34.9,146.7Z","c":[79.2,255.7]},"Colorado":{"d":"M252.3,211.1L357.0,221.7L351.8,302.6L241.2,291.5Z","c":[300.5,257.1]},"New Mexico":{"d":"M241.2,291.5L336.8,301.6L329.3,402.5L268.2,396.8L269.3,401.4L241.1,398.0L239.9,407.0L225.5,405.1Z","c":[282.3,349.1]},"Texas":{"d":"M336.0,311.7L383.9,314.5L382.3,353.7L395.1,361.5L413.2,364.1L429.6,369.4L439.6,369.5L461.1,368.4L473.9,373.5L480.4,375.2L480.7,386.3L481.5,426.7L484.2,438.7L485.5,452.8L470.6,460.1L460.2,469.2L440.8,481.3L427.3,495.2L422.6,511.1L426.9,528.1L406.0,524.7L391.7,518.3L385.2,496.1L371.6,479.6L363.6,463.1L353.8,449.3L336.4,448.0L331.1,449.1L323.1,462.6L307.9,455.3L299.7,448.6L294.6,427.9L269.7,402.1L268.2,396.8L329.3,402.5Z","c":[391.3,417.2]},"Oklahoma":{"d":"M336.8,301.6L469.8,305.5L469.9,315.7L473.3,337.9L473.9,373.5L461.1,368.4L439.6,369.5L429.6,369.4L413.2,364.1L395.1,361.5L382.3,353.7L383.9,314.5L336.0,311.7Z","c":[423.3,333.4]},"Kansas":{"d":"M355.7,241.9L458.5,244.8L464.7,247.8L469.5,262.9L469.8,305.5L351.8,302.6Z","c":[411.1,274.2]},"Nebraska":{"d":"M330.4,179.2L411.3,183.7L430.3,188.1L441.2,194.2L446.4,214.5L450.1,220.5L450.9,232.7L458.5,244.8L355.7,241.9L357.0,221.7L327.0,219.5Z","c":[391.0,212.1]},"South Dakota":{"d":"M335.4,120.2L439.9,124.9L441.3,174.0L441.2,194.2L430.3,188.1L411.3,183.7L330.4,179.2Z","c":[387.7,153.2]},"North Dakota":{"d":"M340.6,59.3L431.9,63.8L433.6,83.7L437.5,103.7L439.9,124.9L335.4,120.2Z","c":[386.9,92.8]},"Minnesota":{"d":"M431.9,63.8L459.2,63.8L466.6,69.7L488.1,71.2L501.8,76.7L518.1,77.9L534.5,80.8L522.7,87.6L509.7,100.3L501.7,107.6L499.5,120.7L492.8,131.0L494.1,148.1L505.1,154.7L516.7,172.3L441.3,174.0L439.9,124.9L437.5,103.7L433.6,83.7Z","c":[471.8,117.8]},"Iowa":{"d":"M441.3,174.0L516.7,172.3L519.4,182.3L526.5,192.0L534.0,205.8L528.4,212.2L521.7,226.7L517.6,235.1L512.8,231.2L450.9,232.7L450.1,220.5L446.4,214.5L441.2,194.2Z","c":[485.1,202.2]},"Missouri":{"d":"M450.9,232.7L512.8,231.2L517.6,235.1L519.0,249.2L529.7,262.8L537.7,266.4L536.9,278.7L550.6,296.1L556.6,301.8L551.7,312.3L549.2,322.6L538.4,323.3L537.8,313.2L469.9,315.7L469.8,305.5L469.5,262.9L464.7,247.8L458.5,244.8Z","c":[503.0,277.0]},"Arkansas":{"d":"M469.9,315.7L537.8,313.2L538.4,323.3L549.2,322.6L543.9,341.2L540.6,343.4L534.8,353.9L528.9,366.4L528.7,384.6L480.7,386.3L480.4,375.2L473.9,373.5L473.3,337.9Z","c":[505.8,347.2]},"Louisiana":{"d":"M480.7,386.3L528.7,384.6L530.6,398.7L523.3,425.3L555.4,423.5L558.7,439.4L562.6,445.2L567.2,461.0L553.2,461.9L535.5,460.9L517.7,454.7L500.1,451.4L485.5,452.8L484.2,438.7L481.5,426.7Z","c":[516.6,425.7]},"Mississippi":{"d":"M540.6,343.4L574.9,341.0L577.3,421.9L579.1,433.9L568.8,435.7L558.7,439.4L555.4,423.5L523.3,425.3L530.6,398.7L528.7,384.6L528.9,366.4L534.8,353.9Z","c":[553.9,388.2]},"Alabama":{"d":"M574.9,341.0L617.2,336.9L628.5,378.4L633.2,390.1L636.2,416.1L591.8,420.7L594.8,434.6L586.3,436.3L579.1,433.9L577.3,421.9Z","c":[601.6,383.6]},"Georgia":{"d":"M617.2,336.9L657.6,332.0L656.8,338.2L666.6,349.1L680.8,360.3L691.6,369.9L702.6,385.6L696.8,403.9L697.5,413.9L689.0,421.3L684.3,418.8L639.3,421.9L636.2,416.1L633.2,390.1L628.5,378.4Z","c":[659.0,380.0]},"Florida":{"d":"M591.8,420.7L636.2,416.1L639.3,421.9L684.3,418.8L689.0,421.3L697.5,413.9L704.6,431.2L719.1,455.3L722.5,464.8L734.7,489.1L736.2,509.1L733.4,519.6L720.6,521.7L705.3,505.9L696.6,497.2L683.4,480.9L683.8,470.8L679.2,451.2L662.9,435.1L648.9,434.9L632.3,442.9L611.8,430.9L594.8,434.6Z","c":[685.4,457.8]},"South Carolina":{"d":"M657.6,332.0L668.4,326.4L690.4,324.0L693.8,330.7L713.1,327.5L735.2,343.0L726.9,357.9L717.1,369.9L702.6,385.6L691.6,369.9L680.8,360.3L666.6,349.1L656.8,338.2Z","c":[697.2,348.5]},"North Carolina":{"d":"M637.9,334.5L657.6,332.0L668.4,326.4L690.4,324.0L693.8,330.7L713.1,327.5L735.2,343.0L745.5,340.1L765.4,321.6L778.6,305.3L767.3,279.8L675.4,296.6L672.1,307.4L662.9,310.8L643.4,323.6Z","c":[720.1,310.9]},"Tennessee":{"d":"M551.7,312.3L643.7,301.1L675.4,296.6L672.1,307.4L662.9,310.8L643.4,323.6L637.9,334.5L540.6,343.4L543.9,341.2L549.2,322.6Z","c":[603.9,320.7]},"Kentucky":{"d":"M551.7,312.3L643.7,301.1L658.2,288.9L668.3,278.4L656.7,267.6L656.0,262.6L649.0,257.4L633.4,257.4L620.4,252.9L612.1,262.0L604.3,277.2L588.9,280.7L579.5,281.6L572.6,284.2L566.7,299.0L556.6,301.8Z","c":[616.2,285.3]},"Virginia":{"d":"M643.7,301.1L767.3,279.8L763.4,273.4L756.5,263.4L754.4,253.5L743.6,247.5L739.8,240.0L735.8,236.6L727.5,231.7L719.1,239.9L707.6,250.2L703.7,255.0L694.1,273.1L684.2,280.9L673.4,283.6L668.3,278.4L658.2,288.9Z","c":[717.2,270.2]},"West Virginia":{"d":"M668.3,278.4L656.7,267.6L656.0,262.6L661.6,257.7L669.5,242.8L678.8,232.5L680.9,226.0L678.8,213.2L680.7,212.9L683.7,231.3L699.4,228.6L701.2,239.0L709.1,232.4L716.9,227.9L727.5,231.7L719.1,239.9L707.6,250.2L703.7,255.0L694.1,273.1L684.2,280.9L673.4,283.6Z","c":[686.5,253.0]},"Maryland":{"d":"M699.4,228.6L754.7,217.8L760.1,243.0L771.5,240.5L770.5,249.4L754.4,253.5L743.6,247.5L739.8,240.0L735.8,236.6L727.5,231.7L716.9,227.9L709.1,232.4L701.2,239.0Z","c":[742.5,234.4]},"Delaware":{"d":"M754.7,217.8L757.2,214.8L760.3,214.9L758.4,220.5L762.2,226.9L769.2,233.7L771.5,240.5L760.1,243.0Z","c":[762.1,231.6]},"District of Columbia":{"d":"M739.1,236.2L741.4,237.8L739.9,240.2L738.2,238.4Z","c":[739.7,238.1]},"Pennsylvania":{"d":"M683.7,231.3L754.7,217.8L757.2,214.8L760.3,214.9L763.4,211.1L768.5,205.8L760.0,199.4L759.6,190.8L763.7,181.8L751.5,171.2L687.4,183.8L686.4,178.5L676.2,185.7L680.7,212.9L683.7,231.3Z","c":[720.2,200.6]},"New Jersey":{"d":"M763.7,181.8L759.6,190.8L760.0,199.4L768.5,205.8L763.4,211.1L760.3,214.9L759.7,219.2L764.0,224.5L770.9,230.6L777.3,220.4L779.5,206.4L778.2,197.3L777.0,192.4L776.3,186.3Z","c":[769.7,205.1]},"New York":{"d":"M686.4,178.5L687.4,183.8L751.5,171.2L763.7,181.8L776.3,186.3L777.0,192.4L778.3,194.6L787.7,191.5L798.5,185.1L806.0,177.9L799.0,180.8L790.5,183.9L779.8,188.0L780.7,185.3L780.8,179.0L777.9,164.1L777.9,149.5L773.4,133.0L770.1,125.5L766.1,105.7L747.4,110.1L740.0,115.9L728.6,130.7L732.7,143.3L726.6,149.7L712.3,152.5L697.9,154.3L693.2,157.2L696.8,164.7Z","c":[745.0,153.2]},"Connecticut":{"d":"M777.9,164.1L802.5,158.5L806.1,172.3L796.2,175.8L789.3,179.0L780.7,185.3L780.8,179.0Z","c":[791.2,169.8]},"Rhode Island":{"d":"M802.5,158.5L808.4,157.4L814.5,166.3L810.3,170.5L806.1,172.3Z","c":[808.1,164.5]},"Massachusetts":{"d":"M777.9,149.5L789.5,147.1L806.1,143.4L812.3,138.2L812.5,150.0L819.3,155.5L830.7,157.6L823.4,161.8L814.5,166.3L808.4,157.4L802.5,158.5L777.9,164.1Z","c":[800.5,154.1]},"Vermont":{"d":"M777.9,149.5L789.5,147.1L788.3,141.7L785.8,128.8L787.5,114.9L791.2,106.6L791.5,99.3L766.1,105.7L770.1,125.5L773.4,133.0Z","c":[779.6,122.1]},"New Hampshire":{"d":"M791.5,99.3L795.4,92.0L801.5,109.1L806.0,120.4L812.7,133.9L812.3,138.2L806.1,143.4L789.5,147.1L788.3,141.7L785.8,128.8L787.5,114.9L791.2,106.6Z","c":[797.4,125.2]},"Maine":{"d":"M795.4,92.0L801.7,77.8L802.8,60.9L809.3,43.4L821.6,41.9L829.9,45.6L837.8,71.5L846.2,79.4L854.0,85.4L843.3,99.2L831.3,109.1L816.8,121.6L812.7,133.9L806.0,120.4L801.5,109.1Z","c":[820.3,83.8]},"Wisconsin":{"d":"M501.7,107.6L518.1,102.8L525.3,109.4L547.0,120.0L558.8,127.2L566.7,136.6L574.7,131.8L569.0,146.5L568.1,168.8L566.0,179.1L568.4,189.0L526.5,192.0L519.4,182.3L516.7,172.3L505.1,154.7L494.1,148.1L492.8,131.0L499.5,120.7Z","c":[533.4,148.8]},"Michigan":{"d":"M525.3,109.4L550.6,95.7L558.3,89.0L566.9,108.3L599.5,99.9L606.9,104.1L613.1,108.4L605.6,116.4L594.1,114.7L580.7,120.1L574.0,123.8L566.7,136.6L558.8,127.2L547.0,120.0Z M605.1,118.4L625.4,127.0L629.0,143.8L622.3,158.9L635.7,150.0L644.4,170.2L645.5,178.2L637.6,185.4L634.0,197.1L588.9,202.4L591.8,193.9L590.7,176.8L584.8,161.1L587.2,142.7L594.7,132.8L602.6,126.8Z","c":[612.6,164.4]},"Illinois":{"d":"M526.5,192.0L568.4,189.0L572.4,200.9L573.8,204.8L578.1,252.2L578.1,265.4L574.3,276.0L572.6,284.2L566.7,299.0L556.6,301.8L550.6,296.1L536.9,278.7L537.7,266.4L529.7,262.8L519.0,249.2L517.6,235.1L521.7,226.7L528.4,212.2L534.0,205.8Z","c":[551.6,240.8]},"Indiana":{"d":"M573.8,204.8L588.9,202.4L614.0,199.6L620.4,252.9L612.1,262.0L604.3,277.2L588.9,280.7L579.5,281.6L572.6,284.2L574.3,276.0L578.1,265.4L578.1,252.2Z","c":[595.8,239.3]},"Ohio":{"d":"M614.0,199.6L634.0,197.5L642.8,201.0L654.7,200.3L660.5,198.4L676.3,186.1L680.7,212.9L678.8,213.2L680.9,226.0L678.8,232.5L669.5,242.8L661.6,257.7L656.0,262.6L649.0,257.4L633.4,257.4L620.4,252.9Z","c":[647.7,225.2]},"Alaska":{"d":"M105.9,448.7L118.6,512.7L125.4,512.7L133.4,518.7L138.1,511.6L145.3,516.8L148.2,518.9L158.3,528.8L166.2,531.2L163.1,537.6L156.9,536.8L152.0,533.2L144.9,525.8L141.0,521.8L137.5,522.8L123.6,516.0L109.4,516.5L99.4,512.1L94.8,518.3L89.7,521.5L82.1,524.7L80.7,515.6L75.6,524.8L73.1,531.2L60.4,541.4L41.8,551.1L30.0,553.7L44.4,545.7L55.1,540.4L61.1,528.0L51.3,527.3L45.7,518.9L37.8,512.8L35.5,501.7L40.5,495.4L51.9,493.4L53.0,486.4L46.7,485.6L36.4,483.2L33.4,475.5L39.9,472.5L47.0,472.9L50.3,469.1L48.2,461.1L42.8,453.8L50.2,450.8L56.9,446.1L68.0,440.0L78.5,443.5L88.3,446.3L95.7,447.6Z","c":[79.6,489.9]},"Hawaii":{"d":"M334.4,558.2L349.6,556.9L358.5,574.1L341.1,588.1L331.2,569.7Z M317.0,542.1L332.2,543.2L325.7,549.0Z M282.3,527.1L293.1,529.5L286.6,532.9Z M250.0,512.0L260.8,512.1L256.4,518.9Z M303.9,535.2L314.8,536.4L310.4,538.7Z","c":[304.2,490.0]}};
+const CALL=['Vermont','New Hampshire','Massachusetts','Rhode Island','Connecticut','New Jersey','Delaware','Maryland','District of Columbia'];
+const TIERS=[{max:5,name:'Poltergeist territory',mid:3},{max:15,name:'Heavily haunted',mid:10},{max:30,name:'Restless',mid:23},{max:45,name:'Faint chills',mid:38},{max:51,name:'Barely a whisper',mid:49}];
+function shade(hex,rk){const u=(51-rk)/50, tt=.08+.92*Math.pow(u,1.5); let c=mixHex(hex,tt); if(rk===1) c=c.map(v=>Math.round(v+(255-v)*.25)); return c;}
+const HEX=['#7fd6c2','#a08cf0','#e0a15a','#6fb0ee','#e0605a'], BONE='#eee6d3', NEON='#a6ff4d', BASE=[36,27,49], INK='#120d1a';
+const hexRGB=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+const mixHex=(h,t)=>{const c=hexRGB(h);return c.map((v,i)=>Math.round(BASE[i]*(1-t)+v*t));};
+const lum=([r,g,b])=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(r)+.7152*f(g)+.0722*f(b);};
+const tierOf=r=>TIERS.find(x=>r<=x.max);
+let view = 'overall', query = '', openState = null, animate = true;
+const tabs = document.getElementById('tabs'), list = document.getElementById('list'),
+      note = document.getElementById('note'), legend = document.getElementById('legend'),
+      tip = document.getElementById('tip');
+
+function buildTabs(){
+  const items=[{id:'overall',label:'Final Ranking',col:'var(--neon)'}].concat(CATS.map((c,i)=>({id:i,label:c.k,col:c.col})));
+  tabs.innerHTML = items.map(t=>`<button role="tab" data-id="${t.id}" style="--tc:${t.col}" aria-selected="${t.id===view}"><i style="background:${t.col}"></i>${t.label}</button>`).join('');
+}
+tabs.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  view = b.dataset.id==='overall' ? 'overall' : +b.dataset.id;
+  openState=null; animate=true; hideTip(); buildTabs(); render();
+});
+
+function sorted(){
+  if(view==='overall') return DATA.map(s=>({s,r:rankLabel(s),top:s.rank<=10}));
+  const arr=[...DATA].sort((a,b)=>b.per[view]-a.per[view]);
+  return arr.map((s,i)=>({s,r:String(i+1),top:i<10}));
+}
+
+function render(){
+  const rows=sorted();
+  if(view==='overall'){
+    note.innerHTML='Sorted by <b>total points</b> out of 255. Each bar is split by category. Hover for rates per 100k, click a state for the full breakdown.';
+    legend.style.display='flex';
+    legend.innerHTML=CATS.map(c=>`<span><i style="background:${c.col}"></i>${c.k}</span>`).join('');
+  } else {
+    const c=CATS[view];
+    note.innerHTML=`<b>${c.k}</b>: ${c.desc}, ranked by <b>${c.unit.replace('per 100k','per 100,000 residents')}</b>. Click a state to see the actual number.`;
+    legend.style.display='none';
+  }
+  const q=query.trim().toLowerCase();
+  const maxPer = view==='overall'?0:Math.max(...DATA.map(s=>s.per[view]));
+  const html=rows.filter(({s})=>!q||s.n.toLowerCase().includes(q)).map(({s,r,top},idx)=>{
+    let bar,val;
+    if(view==='overall'){
+      bar=`<div class="track">${s.pts.map((p,i)=>`<div class="seg" style="width:${p/255*100}%;background:${CATS[i].col};animation-delay:${Math.min(idx,20)*18}ms"></div>`).join('')}</div>`;
+      val=`<div class="val">${s.tot}<small>pts</small></div>`;
+    } else {
+      bar=`<div class="track single"><div class="seg" style="width:${s.per[view]/maxPer*100}%;background:${CATS[view].col};animation-delay:${Math.min(idx,20)*18}ms"></div></div>`;
+      val=`<div class="val">${fmtPer(s.per[view],view)}<small>per 100k</small></div>`;
+    }
+    const isOpen=openState===s.n;
+    return `<li class="row ${isOpen?'open':''} ${top?'top':''}" data-n="${s.n}">
+      <button class="head" aria-expanded="${isOpen}">
+        <span class="rk">${r}${view==='overall'&&isTie(s)?'<small>(TIE)</small>':''}</span><span class="nm">${s.n}</span>${bar}${val}<span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="detail">${isOpen?detail(s):''}</div></li>`;
+  }).join('');
+  renderMap();
+  list.classList.toggle('anim',animate);
+  list.innerHTML = html || '<li class="empty">No state matches that search.</li>';
+  animate=false;
+}
+
+function rankInfo(){
+  const m=new Map();
+  if(view==='overall') DATA.forEach(s=>m.set(s.n,{r:s.rank,label:rankLabel(s)}));
+  else [...DATA].sort((a,b)=>b.per[view]-a.per[view]).forEach((s,i)=>m.set(s.n,{r:i+1,label:String(i+1)}));
+  return m;
+}
+function renderMap(){
+  const hex = view==='overall'?NEON:HEX[view], ri=rankInfo(), q=query.trim().toLowerCase();
+  const mapEl=document.getElementById('map');
+  mapEl.className='map'+(animate?' anim':'');
+  mapEl.style.setProperty('--glow',hex);
+  const order=[...DATA].sort((a,b)=>ri.get(b.n).r-ri.get(a.n).r);
+  let body='', calls='';
+  order.forEach(s=>{
+    const g=GEO[s.n], a=ABBR[s.n], info=ri.get(s.n), rk=info.r, rgb=shade(hex,rk), gl=rk===1?'g1':rk<=5?'g2':rk<=10?'g3':'';
+    const dim=q&&!s.n.toLowerCase().includes(q)?' dim':'', sel=openState===s.n?' sel':'';
+    const delay=`animation-delay:${(51-rk)*16}ms`;
+    const attrs=`data-n="${s.n}" tabindex="0" role="button" aria-label="${s.n}, rank ${info.label}" style="${delay}"`;
+    if(CALL.includes(s.n)){
+      const i=CALL.indexOf(s.n), by=104+i*36;
+      body+=`<g class="st ${gl}${dim}${sel}" ${attrs}><path d="${g.d}" fill="rgb(${rgb})"/></g>`;
+      calls+=`<g class="co${dim}${sel}" ${attrs}><line x1="866" y1="${by+14}" x2="${g.c[0]}" y2="${g.c[1]}"/><rect x="866" y="${by}" width="66" height="28" rx="7" fill="rgb(${rgb})"/><text class="ca" x="874" y="${by+19}">${a}</text><text class="cr" x="925" y="${by+20}" text-anchor="end">${rk}</text></g>`;
+    } else {
+      body+=`<g class="st ${gl}${dim}${sel}" ${attrs}><path d="${g.d}" fill="rgb(${rgb})"/><text x="${g.c[0]}" y="${g.c[1]}" text-anchor="middle"><tspan class="la" x="${g.c[0]}" dy="-2">${a}</tspan><tspan class="lr" x="${g.c[0]}" dy="15">${rk}</tspan></text></g>`;
+    }
+  });
+  const ring=openState&&GEO[openState]?`<path class="selring" d="${GEO[openState].d}" fill="none"/>`:'';
+  mapEl.innerHTML=`<svg viewBox="0 0 960 600" role="group" aria-label="Map of the United States by rank">${body}${ring}${calls}</svg>`;
+  let prev=0;
+  document.getElementById('tiers').innerHTML=TIERS.map(x=>{const rng=`${prev+1}${x.max>prev+1?'–'+x.max:''}`;prev=x.max;
+    return `<span><i style="background:rgb(${shade(hex,x.mid).join(',')})"></i>${x.name} <em>${rng}</em></span>`;}).join('');
+  const ro=document.getElementById('readout');
+  if(!openState){ro.textContent='Hover over a state for its rates, or select one to see its result here.';}
+  else{
+    const s=DATA.find(x=>x.n===openState), info=ri.get(openState), tier=tierOf(info.r);
+    ro.innerHTML = view==='overall'
+      ? `<b>${s.n}</b>: final rank <em>${info.label}</em>${tieTag(s)} of 51 with ${s.tot} points (${tier.name}).<button data-go>See full breakdown</button>`
+      : `<b>${s.n}</b>: ranked <em>${info.label}</em> of 51 for ${CATS[view].k.toLowerCase()}, with ${fmtPer(s.per[view],view)} ${CATS[view].noun} per 100k (${fmtInt(s.raw[view])} in total).<button data-go>See in the list</button>`;
+  }
+}
+
+function detail(s){
+  if(view!=='overall'){
+    const c=CATS[view], i=view;
+    return `<div class="dtitle"><strong>${s.n}</strong><span>Ranked <em>${rankIn(s,i)}</em> of 51 for ${c.k.toLowerCase()}</span></div>
+    <div class="stats"><div><b>${fmtInt(s.raw[i])}</b><small>${c.noun}</small></div>
+    <div><b style="color:${c.col}">${fmtPer(s.per[i],i)}</b><small>${c.noun} per 100k residents</small></div></div>`;
+  }
+  const rows=CATS.map((c,i)=>`<tr><td><i style="background:${c.col}"></i>${c.k}</td>
+    <td>${fmtInt(s.raw[i])}</td><td>${fmtPer(s.per[i],i)}</td><td class="rcol">#${52-s.pts[i]}</td><td class="pts">${s.pts[i]}</td></tr>`).join('');
+  return `<div class="dtitle"><strong>${s.n}</strong><span>Final rank <em>${rankLabel(s)}</em>${tieTag(s)} of 51</span></div>
+  <table><thead><tr><th>Factor</th><th>Total number</th><th>Per 100k</th><th class="rcol">Rank (of 51)</th><th>Points</th></tr></thead><tbody>${rows}
+  <tr class="total"><td>Total points</td><td></td><td></td><td class="rcol"></td><td>${s.tot} / 255</td></tr></tbody></table>`;
+}
+const rankIn=(s,i)=>52-s.pts[i];
+
+list.addEventListener('click',e=>{
+  const li=e.target.closest('.row'); if(!li) return;
+  const n=li.dataset.n; openState = openState===n?null:n; hideTip(); render();
+});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;render();});
+
+/* tooltips */
+function tipHTML(s){
+  return `<h4>${s.n}</h4>`+CATS.map((c,i)=>`<div class="l"><span>${c.unit}</span><b>${fmtPer(s.per[i],i)}</b></div>`).join('')+
+    `<div class="hint">Click for the full breakdown</div>`;
+}
+function moveTip(e){
+  const w=tip.offsetWidth,h=tip.offsetHeight;
+  let x=e.clientX+16,y=e.clientY+16;
+  if(x+w>innerWidth-8) x=e.clientX-w-16;
+  if(y+h>innerHeight-8) y=innerHeight-h-8;
+  tip.style.left=Math.max(8,x)+'px'; tip.style.top=Math.max(8,y)+'px';
+}
+function hideTip(){tip.classList.remove('on');}
+list.addEventListener('mousemove',e=>{
+  if(view!=='overall'){hideTip();return;}
+  const head=e.target.closest('.head');
+  if(!head){hideTip();return;}
+  const s=DATA.find(x=>x.n===head.parentElement.dataset.n);
+  const key='list|'+s.n;
+  if(tip.dataset.n!==key){tip.innerHTML=tipHTML(s);tip.dataset.n=key;}
+  tip.classList.add('on'); moveTip(e);
+});
+list.addEventListener('mouseleave',()=>{hideTip();tip.dataset.n='';});
+document.addEventListener('scroll',hideTip,{passive:true});
+
+/* map interactions */
+const mapEl=document.getElementById('map');
+mapEl.addEventListener('mousemove',e=>{
+  const b=e.target.closest('.st,.co'); if(!b){hideTip();return;}
+  const s=DATA.find(x=>x.n===b.dataset.n), ri=rankInfo().get(s.n), key=s.n+'|'+view;
+  if(tip.dataset.n!==key){
+    tip.innerHTML = view==='overall'
+      ? `<h4>${s.n}</h4><div class="l"><span>Final rank</span><b>${ri.label} of 51${isTie(s)?' (TIE)':''}</b></div><div class="l"><span>Total points</span><b>${s.tot}</b></div>`+CATS.map((c,i)=>`<div class="l"><span>${c.unit}</span><b>${fmtPer(s.per[i],i)}</b></div>`).join('')+`<div class="hint">Click to select</div>`
+      : `<h4>${s.n}</h4><div class="l"><span>Rank for ${CATS[view].k.toLowerCase()}</span><b>${ri.label} of 51</b></div><div class="l"><span>${CATS[view].unit}</span><b>${fmtPer(s.per[view],view)}</b></div><div class="l"><span>Total ${CATS[view].noun}</span><b>${fmtInt(s.raw[view])}</b></div><div class="hint">Click to select</div>`;
+    tip.dataset.n=key;
+  }
+  tip.classList.add('on'); moveTip(e);
+});
+mapEl.addEventListener('mouseleave',()=>{hideTip();tip.dataset.n='';});
+function pickState(n){ openState = openState===n?null:n; hideTip(); render(); }
+mapEl.addEventListener('click',e=>{const b=e.target.closest('.st,.co'); if(b) pickState(b.dataset.n);});
+mapEl.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){const b=e.target.closest('.st,.co'); if(b){e.preventDefault();pickState(b.dataset.n);}}});
+document.getElementById('readout').addEventListener('click',e=>{
+  if(!e.target.closest('[data-go]')) return;
+  const row=[...list.children].find(li=>li.dataset.n===openState);
+  if(row) row.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+});
+
+buildTabs(); render();
+</script>
+</body>
+</html>
